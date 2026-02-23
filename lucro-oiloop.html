@@ -11,8 +11,9 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
       margin: 0;
+      padding: 20px;
     }
 
     .container {
@@ -21,7 +22,7 @@
       border-radius: 12px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
       width: 100%;
-      max-width: 420px;
+      max-width: 450px;
     }
 
     h2 {
@@ -33,6 +34,7 @@
       font-weight: bold;
       margin-top: 10px;
       display: block;
+      font-size: 14px;
     }
 
     input {
@@ -64,6 +66,7 @@
       padding: 10px;
       background: #eef2f7;
       border-radius: 8px;
+      font-size: 14px;
     }
   </style>
 </head>
@@ -83,8 +86,11 @@
     <label>Preço de compra do óleo (R$ por litro):</label>
     <input type="number" id="precoCompra" step="0.01" />
 
-    <label>Quantidade de litros comprados:</label>
-    <input type="number" id="litros" step="0.01" />
+    <label>Litros pagos ao cliente:</label>
+    <input type="number" id="litrosPagos" step="0.01" />
+
+    <label>Litros coletados a mais (se houver):</label>
+    <input type="number" id="litrosExtras" step="0.01" placeholder="Opcional" />
 
     <label>Preço de venda do óleo (R$ por litro):</label>
     <input type="number" id="precoVenda" step="0.01" />
@@ -100,7 +106,8 @@
       const autonomia = parseFloat(document.getElementById('autonomia').value) || 0;
       const precoCombustivel = parseFloat(document.getElementById('precoCombustivel').value) || 0;
       const precoCompra = parseFloat(document.getElementById('precoCompra').value) || 0;
-      const litros = parseFloat(document.getElementById('litros').value) || 0;
+      const litrosPagos = parseFloat(document.getElementById('litrosPagos').value) || 0;
+      const litrosExtras = parseFloat(document.getElementById('litrosExtras').value) || 0;
       const precoVenda = parseFloat(document.getElementById('precoVenda').value) || 0;
 
       if (autonomia <= 0) {
@@ -108,24 +115,33 @@
         return;
       }
 
+      const litrosTotaisVendidos = litrosPagos + litrosExtras;
+
       const litrosCombustivelGastos = km / autonomia;
       const custoCombustivel = litrosCombustivelGastos * precoCombustivel;
-      const custoCompra = precoCompra * litros;
-      const receitaVenda = precoVenda * litros;
+      const custoCompra = precoCompra * litrosPagos; // paga apenas o que foi combinado
+      const receitaVenda = precoVenda * litrosTotaisVendidos; // vende tudo que coletou
 
       const custoTotal = custoCombustivel + custoCompra;
       const lucro = receitaVenda - custoTotal;
+      const margem = receitaVenda > 0 ? (lucro / receitaVenda) * 100 : 0;
 
       document.getElementById('resultado').innerHTML = `
         <strong>Resumo:</strong><br><br>
+        Litros pagos: ${litrosPagos.toFixed(2)} L<br>
+        Litros extras: ${litrosExtras.toFixed(2)} L<br>
+        Total vendido: ${litrosTotaisVendidos.toFixed(2)} L<br><br>
+
         Combustível gasto: ${litrosCombustivelGastos.toFixed(2)} L<br>
         Custo combustível: R$ ${custoCombustivel.toFixed(2)}<br>
         Custo compra óleo: R$ ${custoCompra.toFixed(2)}<br>
         Receita venda: R$ ${receitaVenda.toFixed(2)}<br>
         <hr>
-        <strong>Lucro líquido: R$ ${lucro.toFixed(2)}</strong>
+        <strong>Lucro líquido: R$ ${lucro.toFixed(2)}</strong><br>
+        Margem: ${margem.toFixed(2)}%
       `;
     }
   </script>
 </body>
 </html>
+
