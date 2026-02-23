@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora de Lucro - Óleo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 420px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: bold;
+      margin-top: 10px;
+      display: block;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 20px;
+      border: none;
+      border-radius: 8px;
+      background-color: #2e86de;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #1b4f72;
+    }
+
+    .resultado {
+      margin-top: 20px;
+      padding: 10px;
+      background: #eef2f7;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Calculadora de Lucro - Óleo</h2>
+
+    <label>Quilômetros percorridos:</label>
+    <input type="number" id="km" step="0.01" />
+
+    <label>Autonomia do carro (km por litro):</label>
+    <input type="number" id="autonomia" step="0.01" />
+
+    <label>Preço do combustível (R$):</label>
+    <input type="number" id="precoCombustivel" step="0.01" />
+
+    <label>Preço de compra do óleo (R$ por litro):</label>
+    <input type="number" id="precoCompra" step="0.01" />
+
+    <label>Quantidade de litros comprados:</label>
+    <input type="number" id="litros" step="0.01" />
+
+    <label>Preço de venda do óleo (R$ por litro):</label>
+    <input type="number" id="precoVenda" step="0.01" />
+
+    <button onclick="calcularLucro()">Calcular Lucro</button>
+
+    <div class="resultado" id="resultado"></div>
+  </div>
+
+  <script>
+    function calcularLucro() {
+      const km = parseFloat(document.getElementById('km').value) || 0;
+      const autonomia = parseFloat(document.getElementById('autonomia').value) || 0;
+      const precoCombustivel = parseFloat(document.getElementById('precoCombustivel').value) || 0;
+      const precoCompra = parseFloat(document.getElementById('precoCompra').value) || 0;
+      const litros = parseFloat(document.getElementById('litros').value) || 0;
+      const precoVenda = parseFloat(document.getElementById('precoVenda').value) || 0;
+
+      if (autonomia <= 0) {
+        document.getElementById('resultado').innerHTML = "Autonomia precisa ser maior que zero.";
+        return;
+      }
+
+      const litrosCombustivelGastos = km / autonomia;
+      const custoCombustivel = litrosCombustivelGastos * precoCombustivel;
+      const custoCompra = precoCompra * litros;
+      const receitaVenda = precoVenda * litros;
+
+      const custoTotal = custoCombustivel + custoCompra;
+      const lucro = receitaVenda - custoTotal;
+
+      document.getElementById('resultado').innerHTML = `
+        <strong>Resumo:</strong><br><br>
+        Combustível gasto: ${litrosCombustivelGastos.toFixed(2)} L<br>
+        Custo combustível: R$ ${custoCombustivel.toFixed(2)}<br>
+        Custo compra óleo: R$ ${custoCompra.toFixed(2)}<br>
+        Receita venda: R$ ${receitaVenda.toFixed(2)}<br>
+        <hr>
+        <strong>Lucro líquido: R$ ${lucro.toFixed(2)}</strong>
+      `;
+    }
+  </script>
+</body>
+</html>
